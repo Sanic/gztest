@@ -1,0 +1,10 @@
+[
+    {
+        "method": "onObject",
+        "params": { 
+            "object": "Object",
+            "surface": "Object"
+        },
+        "returns" : true
+    }
+]

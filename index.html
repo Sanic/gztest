@@ -34,7 +34,7 @@
           <h1>
 <a name="gztest" class="anchor" href="#gztest"><span class="octicon octicon-link"></span></a>gztest</h1>
 
-<p>gztest is a distributed testing framework for gazebo. It features an architecture, that splits the test execution and the gazebo core from each other. The communication is done via JSON-RPC. The software consists of a serverside system plugin, that fetches all the testable features from the running gazebo world. On the clientside however, you have a library that handles the communication with the gazebo core and provides ease-to-use methods for useful test-conditions like "Object A on B?" etc.</p>
+<p>gztest is a distributed testing framework for gazebo. It features an architecture, that splits the test execution and the gazebo core from each other. The communication between them is done via JSON-RPC. The software consists of a serverside system plugin, that fetches all the testable features from the running gazebo world. On the clientside however, you have a library that handles the communication with the serverside plugin that is connected to the gazebo core and provides easy-to-use methods for useful test-conditions like "Object A on B?" etc.</p>
 
 <h2>architecture</h2>
 <img alt="architecture" src="images/architecture.png">

@@ -38,8 +38,8 @@ add_library(TestPlugin SHARED src/TestPlugin.cpp)
 target_link_libraries(TestPlugin ${GAZEBO_libraries} jsonrpc)
 
 #add the gztest library
-add_library(gztest src/gztest_helpers.cpp)
-target_link_libraries(gztest ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} )
+add_library(gztest src/gztest_helpers.cpp src/test_client.cpp)
+target_link_libraries(gztest ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} jsonrpc)
 
 # Build tests
 # add_executable(delayed_tests tests/delayed_tests.cpp)

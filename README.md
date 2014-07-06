@@ -2,6 +2,7 @@ gztest
 ======
 
 A distributed testing framework for gazebo.
+You can get more information on our github.io page: http://sanic.github.io/gztest/
 
 Installation
 ======

@@ -2,7 +2,7 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/thread.hpp>
-#include "gztest/gztest_helpers.h"
+#include "gztest/test_helpers.h"
 
 // Use the helper methods from gztest
 gztest::TestHelper th;

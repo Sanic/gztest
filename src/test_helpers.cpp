@@ -1,4 +1,4 @@
-#include "gztest/gztest_helpers.h"
+#include "gztest/test_helpers.h"
 
 using namespace gztest;
 

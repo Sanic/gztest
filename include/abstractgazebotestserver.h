@@ -14,6 +14,7 @@ class AbstractGazeboTestServer : public jsonrpc::AbstractServer<AbstractGazeboTe
             jsonrpc::AbstractServer<AbstractGazeboTestServer>(conn) 
         {
             this->bindAndAddMethod(new jsonrpc::Procedure("onObject", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_BOOLEAN, "object",jsonrpc::JSON_STRING,"surface",jsonrpc::JSON_STRING, NULL), &AbstractGazeboTestServer::onObjectI);
+            this->bindAndAddNotification(new jsonrpc::Procedure("resetWorld", jsonrpc::PARAMS_BY_NAME,  NULL), &AbstractGazeboTestServer::resetWorldI);
 
         }
         
@@ -22,8 +23,14 @@ class AbstractGazeboTestServer : public jsonrpc::AbstractServer<AbstractGazeboTe
             response = this->onObject(request["object"].asString(), request["surface"].asString());
         }
 
+        inline virtual void resetWorldI(const Json::Value& request) 
+        {
+            this->resetWorld();
+        }
+
 
         virtual bool onObject(const std::string& object, const std::string& surface) = 0;
+        virtual void resetWorld() = 0;
 
 };
 #endif //_ABSTRACTGAZEBOTESTSERVER_H_

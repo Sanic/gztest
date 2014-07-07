@@ -33,6 +33,13 @@ p["surface"] = surface;
 
         }
 
+        void resetWorld() throw (jsonrpc::JsonRpcException)
+        {
+            Json::Value p;
+            p = Json::nullValue;
+            this->client->CallNotification("resetWorld",p);
+        }
+
     private:
         jsonrpc::Client* client;
 };

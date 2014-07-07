@@ -29,6 +29,12 @@ namespace gazebo
     	return OnEntity(this->world->GetModel(object), this->world->GetModel(surface));
     }
 
+    //////////////////////////////////////////////////
+    void TestPlugin::resetWorld()
+    {
+    	this->world->Reset();
+    }
+
 	//////////////////////////////////////////////////
     bool TestPlugin::OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntity) {
 

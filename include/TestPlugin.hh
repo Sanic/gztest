@@ -21,6 +21,7 @@ namespace gazebo
       void Load(physics::WorldPtr _world, sdf::ElementPtr _sdf);
       void OnUpdate(const common::UpdateInfo & /*_info*/);
       bool onObject(const std::string& object, const std::string& surface);
+      void resetWorld();
     private:
       bool OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntity);
       event::ConnectionPtr updateConnection;

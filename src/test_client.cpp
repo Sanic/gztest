@@ -19,3 +19,7 @@ bool TestClient::OnObject(const std::string& object, const std::string& surface)
   return this->client->onObject(object,surface);
 }
 
+//////////////////////////////////////////////////////////
+void TestClient::ResetWorld(){
+	this->client->resetWorld();
+}

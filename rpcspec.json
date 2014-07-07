@@ -6,5 +6,9 @@
             "surface": "Object"
         },
         "returns" : true
+    },
+    {
+        "notification": "resetWorld",
+        "params": null
     }
 ]

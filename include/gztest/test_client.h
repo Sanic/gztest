@@ -19,6 +19,8 @@ namespace gztest
     /// \param[in] _object The name of the object
     /// \param[in] _surface Check, if the object is laying on the specified surface
     public: bool OnObject(const std::string& object, const std::string& surface);
+    /// \brief Resets the world in gazebo to initial state.
+    public: void ResetWorld();
     private: GazeboTestClient* client;
   };
 }

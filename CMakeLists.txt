@@ -23,7 +23,7 @@ set(EXT_PROJECTS_DIR ${PROJECT_SOURCE_DIR}/ext)
 
 ## JSON RPC
 add_subdirectory(${EXT_PROJECTS_DIR}/json-rpc-cpp/src/jsonrpc)
-set(JSON_RPC_INCLUDES ${EXT_PROJECTS_DIR}/json-rpc-cpp/src)
+set(JSON_RPC_INCLUDES ${EXT_PROJECTS_DIR}/json-rpc-cpp/src PARENT_SCOPE)
 
 ## Download and compile gtest on the fly ... Thanks to:
 ## https://github.com/snikulov/google-test-examples 

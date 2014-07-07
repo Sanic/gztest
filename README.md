@@ -5,7 +5,12 @@ You can get more information on our github.io page: http://sanic.github.io/gztes
 
 ### Installation
 
-You have to install the JSON-RPC library. The steps are described in the README.md of the project: https://github.com/cinemast/libjson-rpc-cpp
+- Checkout the repository with git clone --recursive, to get the contents of all submodules
+- Go to the folder where the repository contents are
+- mkdir build/
+- cd build
+- cmake ..
+- make
 
 ### Examples
 

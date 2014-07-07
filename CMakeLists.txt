@@ -6,7 +6,7 @@ include (FindPkgConfig)
 if (PKG_CONFIG_FOUND)
   pkg_check_modules(GAZEBO gazebo)
   pkg_check_modules(OGRE OGRE)
-endif()   
+endif()
 include_directories(include)
 
 include_directories(${GAZEBO_INCLUDE_DIRS} ${OGRE_INCLUDE_DIRS})
@@ -18,21 +18,22 @@ find_package(Boost REQUIRED system filesystem regex thread)
 #find_package(Protobuf REQUIRED)
 #add_subdirectory(msgs)
 
-# Include gazebo dirs and our msgs dirs in build/
-include_directories(
-  ${GAZEBO_INCLUDE_DIRS}
-)
-
-# Download and compile gtest on the fly ... Thanks to:
-# https://github.com/snikulov/google-test-examples 
-
+# Begin external projects
 set(EXT_PROJECTS_DIR ${PROJECT_SOURCE_DIR}/ext)
+
+## JSON RPC
+add_subdirectory(${EXT_PROJECTS_DIR}/json-rpc-cpp/src/jsonrpc)
+include_directories(${EXT_PROJECTS_DIR}/json-rpc-cpp/src)
+
+## Download and compile gtest on the fly ... Thanks to:
+## https://github.com/snikulov/google-test-examples 
+
 add_subdirectory(${EXT_PROJECTS_DIR}/gtest)
 enable_testing()
 include_directories(${GTEST_INCLUDE_DIRS} ${COMMON_INCLUDES})
 set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
 
-add_subdirectory(${EXT_PROJECTS_DIR}/json-rpc-cpp)
+# End external projects
 
 add_library(TestPlugin SHARED src/TestPlugin.cpp)
 target_link_libraries(TestPlugin ${GAZEBO_libraries} jsonrpc)
@@ -54,7 +55,7 @@ target_link_libraries(gztest ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} jsonrpc)
 file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/tests/*.cpp)
 add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES})
 add_dependencies(${PROJECT_TEST_NAME} googletest)
-target_link_libraries(${PROJECT_TEST_NAME} pthread ${Boost_LIBRARIES} gztest jsonrpc)
+target_link_libraries(${PROJECT_TEST_NAME} gztest)
 	target_link_libraries(${PROJECT_TEST_NAME} 
 		${GTEST_LIBS_DIR}/libgtest.a
 		${GTEST_LIBS_DIR}/libgtest_main.a

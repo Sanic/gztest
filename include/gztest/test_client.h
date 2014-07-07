@@ -6,7 +6,6 @@
 #ifndef _TEST_CLIENT_H_
 #define _TEST_CLIENT_H_
 
-#include <jsonrpc/rpc.h>
 #include "gazebotestclient.h"
 
 namespace gztest

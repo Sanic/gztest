@@ -23,6 +23,7 @@ set(EXT_PROJECTS_DIR ${PROJECT_SOURCE_DIR}/ext)
 
 ## JSON RPC
 add_subdirectory(${EXT_PROJECTS_DIR}/json-rpc-cpp/src/jsonrpc)
+include_directories(${EXT_PROJECTS_DIR}/json-rpc-cpp/src)
 set(JSON_RPC_INCLUDES ${EXT_PROJECTS_DIR}/json-rpc-cpp/src PARENT_SCOPE)
 
 ## Download and compile gtest on the fly ... Thanks to:
@@ -35,7 +36,6 @@ set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
 
 # End external projects
 
-include_directories(${JSON_RPC_INCLUDES})
 add_library(TestPlugin SHARED src/TestPlugin.cpp)
 target_link_libraries(TestPlugin ${GAZEBO_libraries} jsonrpc)
 

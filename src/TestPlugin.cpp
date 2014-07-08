@@ -35,6 +35,12 @@ namespace gazebo
     	this->world->Reset();
     }
 
+    //////////////////////////////////////////////////
+    void TestPlugin::loadWorld(const std::string& world)
+    {
+    	// Do stuff
+    }
+
 	//////////////////////////////////////////////////
     bool TestPlugin::OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntity) {
 

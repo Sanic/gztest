@@ -10,5 +10,12 @@
     {
         "notification": "resetWorld",
         "params": null
+    },
+    {
+    	"notification": "loadWorld",
+    	"params": {
+    		"world" : "Worldname"
+    	}
     }
+    	
 ]

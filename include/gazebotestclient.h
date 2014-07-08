@@ -19,6 +19,14 @@ class GazeboTestClient
             delete this->client;
         }
 
+        void loadWorld(const std::string& world) throw (jsonrpc::JsonRpcException)
+        {
+            Json::Value p;
+            p["world"] = world; 
+
+            this->client->CallNotification("loadWorld",p);
+        }
+
         bool onObject(const std::string& object, const std::string& surface) throw (jsonrpc::JsonRpcException)
         {
             Json::Value p;

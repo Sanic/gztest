@@ -14,11 +14,20 @@ namespace gazebo
   // If the bounding box of an object is less than this value (in meters) over the other object, it is considered to be "on" the other object.
   #define ON_ENTITY_TOLERANCE 0.01
 
+#ifdef USE_SYSTEM_PLUGIN
+  class TestPlugin : public SystemPlugin, public AbstractGazeboTestServer
+#else
   class TestPlugin : public WorldPlugin, public AbstractGazeboTestServer
+#endif
   {
     public:
 	  TestPlugin();
-      void Load(physics::WorldPtr _world, sdf::ElementPtr _sdf);
+#ifdef USE_SYSTEM_PLUGIN
+      void Load(int _argc, char **_argv);
+#else
+	  void Load(physics::WorldPtr _world, sdf::ElementPtr _sdf);
+#endif
+	  void Init();
       void OnUpdate(const common::UpdateInfo & /*_info*/);
       bool onObject(const std::string& object, const std::string& surface);
       void resetWorld();
@@ -29,6 +38,10 @@ namespace gazebo
       physics::WorldPtr world;
   };
 
+#ifdef USE_SYSTEM_PLUGIN
+  GZ_REGISTER_SYSTEM_PLUGIN(TestPlugin)
+#else
   GZ_REGISTER_WORLD_PLUGIN(TestPlugin)
+#endif
 }
 #endif

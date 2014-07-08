@@ -8,12 +8,26 @@ namespace gazebo
 	{
 	}
 
+#ifdef USE_SYSTEM_PLUGIN
+	//////////////////////////////////////////////////
+	void TestPlugin::Load(int _argc, char **_argv)
+	{
+		// Do nothing on server load
+	}
+#else
 	//////////////////////////////////////////////////
 	void TestPlugin::Load(physics::WorldPtr _world, sdf::ElementPtr _sdf)
 	{
-		this->world = _world;
+		Init();
+	}
+#endif
+
+	//////////////////////////////////////////////////
+	void TestPlugin::Init()
+	{
+		this->world = physics::get_world();
 		this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&TestPlugin::OnUpdate, this, _1));
-        StartListening();
+	    StartListening();
 	}
 
 	//////////////////////////////////////////////////

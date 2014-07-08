@@ -59,9 +59,9 @@ namespace gazebo
 			return;
 		}
 
-		if (!sdf::readString(world, sdf))
+		if (!sdf::readFile(world, sdf))
 		{
-			gzerr << "Unable to read SDF string[" << world << "]\n";
+			gzerr << "Unable to read SDF file [" << world << "]\n";
 			return;
 		}
 		sdf::ElementPtr worldElem = sdf->root->GetElement("world");

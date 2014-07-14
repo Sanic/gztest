@@ -16,6 +16,7 @@ namespace gztest
 TestWrapper::TestWrapper() :
 		AbstractGazeboTestServer(new jsonrpc::HttpServer(RPC_PORT))
 {
+	StartListening();
 	server = new Server();
 //	terminate = false;
 }

@@ -52,38 +52,7 @@ namespace gazebo
     //////////////////////////////////////////////////
     void TestPlugin::loadWorld(const std::string& world)
     {
-		sdf::SDFPtr sdf(new sdf::SDF);
-		if (!sdf::init(sdf))
-		{
-			gzerr << "Unable to initialize sdf\n";
-			return;
-		}
-
-		if (!sdf::readFile(world, sdf))
-		{
-			gzerr << "Unable to read SDF file [" << world << "]\n";
-			return;
-		}
-		sdf::ElementPtr worldElem = sdf->root->GetElement("world");
-		if (worldElem)
-		{
-	    	physics::stop_worlds();
-	    	physics::remove_worlds();
-	    	sensors::remove_sensors();
-	    	gazebo::transport::clear_buffers();
-			physics::WorldPtr world = physics::create_world();
-
-			// Create the world
-			try
-			{
-				physics::load_world(world, worldElem);
-				physics::init_world(world);
-				physics::run_world(world);
-			} catch (common::Exception &e)
-			{
-				gzthrow("Failed to load the World\n" << e);
-			}
-		}
+		// Wont work in a plugin context
     }
 
 	//////////////////////////////////////////////////

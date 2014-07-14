@@ -9,6 +9,9 @@
 
 using namespace gazebo;
 
+// Get access to gazebo::g_worlds, which is defined in PhysicsIface.cc
+extern std::vector<gazebo::physics::WorldPtr> g_worlds;
+
 namespace gztest
 {
 
@@ -17,7 +20,7 @@ TestWrapper::TestWrapper() :
 		AbstractGazeboTestServer(new jsonrpc::HttpServer(RPC_PORT))
 {
 	StartListening();
-	server = new Server();
+	this->server = new Server();
 //	terminate = false;
 }
 
@@ -64,13 +67,21 @@ void TestWrapper::loadWorld(const std::string& worldPath)
 	if (worldElem)
 	{
 		// Get the currently running world
-		gazebo::physics::WorldPtr old_default_world = gazebo::physics::get_world("default");
+		gazebo::physics::WorldPtr old_default_world = gazebo::physics::get_world();
 		// Push an empty world to the g_worlds list
 		gazebo::physics::WorldPtr new_world = gazebo::physics::create_world("default");
 		if (old_default_world)
 		{
+			msgs::WorldModify worldMsg;
+			worldMsg.set_world_name("default");
+			worldMsg.set_remove(true);
+			this->worldModPub->Publish(worldMsg);
 			gzmsg << "Got an old default world. Stopping world ...\n";
 			old_default_world->Stop();
+			// Get access to gazebo::g_worlds, which is defined in PhysicsIface.cc
+			g_worlds.erase(g_worlds.begin());
+			// 1 World should be left ...
+			gzmsg << "Running worlds " << g_worlds.size() << "\n";
 		}
 		// Create the world
 		try
@@ -90,6 +101,7 @@ void TestWrapper::loadWorld(const std::string& worldPath)
 	{
 		gzerr << "World SDF Element can't be loaded\n";
 	}
+	gzmsg << "Fin\n";
 }
 
 //////////////////////////////////////////////////
@@ -120,6 +132,13 @@ bool TestWrapper::OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntit
 					<= ON_ENTITY_TOLERANCE;
 }
 
+void TestWrapper::initGazeboTransport() {
+	sleep(2);
+	transport::NodePtr node = transport::NodePtr(new transport::Node());
+	node->Init("/gztest");
+	this->worldModPub = node->Advertise<msgs::WorldModify>("/gazebo/world/modify");
+}
+
 //////////////////////////////////////////////////
 void TestWrapper::startGazebo(int _argc, char **_argv)
 {
@@ -128,6 +147,7 @@ void TestWrapper::startGazebo(int _argc, char **_argv)
 	if (!server->ParseArgs(_argc, _argv))
 		return;
 //		waitForRestart.unlock();
+	boost::thread(boost::bind(&TestWrapper::initGazeboTransport, this));
 	server->Run();
 	server->Fini();
 	delete server;

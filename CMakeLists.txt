@@ -37,7 +37,7 @@ set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
 # End external projects
 add_definitions(-DUSE_SYSTEM_PLUGIN)
 add_library(TestPlugin SHARED src/TestPlugin.cpp)
-target_link_libraries(TestPlugin ${GAZEBO_libraries} jsonrpc)
+target_link_libraries(TestPlugin ${GAZEBO_LIBRARIES} jsonrpc)
 
 #add the gztest library
 add_library(gztest src/test_helpers.cpp src/test_client.cpp)
@@ -45,7 +45,7 @@ target_link_libraries(gztest ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} jsonrpc)
 
 # Gazebo test wrapper executable
 add_executable(TestWrapper src/TestWrapper.cpp)
-target_link_libraries(TestWrapper ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} jsonrpc)
+target_link_libraries(TestWrapper ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} protobuf jsonrpc)
 
 # Build tests
 # add_executable(delayed_tests tests/delayed_tests.cpp)

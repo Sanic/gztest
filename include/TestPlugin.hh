@@ -3,7 +3,6 @@
 
 #include "gazebo/gazebo.hh"
 #include "gazebo/physics/physics.hh"
-#include "gazebo/sensors/sensors.hh"
 #include "abstractgazebotestserver.h"
 
 namespace gazebo

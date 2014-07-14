@@ -9,7 +9,6 @@
 #define TESTWRAPPER_HH_
 #include "gazebo/gazebo.hh"
 #include "gazebo/physics/physics.hh"
-#include "gazebo/sensors/sensors.hh"
 #include "abstractgazebotestserver.h"
 
 namespace gztest
@@ -32,8 +31,10 @@ public:
     void startGazebo(int _argc, char **_argv);
 private:
     bool OnEntity(gazebo::physics::EntityPtr entity, gazebo::physics::EntityPtr onEntity);
+    void initGazeboTransport();
     gazebo::Server *server;
     gazebo::physics::WorldPtr world;
+    gazebo::transport::PublisherPtr worldModPub;
 //    boost::mutex waitForRestart;
 //    bool terminate;
 };

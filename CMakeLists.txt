@@ -43,6 +43,10 @@ target_link_libraries(TestPlugin ${GAZEBO_libraries} jsonrpc)
 add_library(gztest src/test_helpers.cpp src/test_client.cpp)
 target_link_libraries(gztest ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} jsonrpc)
 
+# Gazebo test wrapper executable
+add_executable(TestWrapper src/TestWrapper.cpp)
+target_link_libraries(TestWrapper ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} jsonrpc)
+
 # Build tests
 # add_executable(delayed_tests tests/delayed_tests.cpp)
 # Download and build googletest (from ext/gtest/ ) before building the test

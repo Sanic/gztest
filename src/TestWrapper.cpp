@@ -21,7 +21,8 @@ TestWrapper::TestWrapper() :
 {
 	StartListening();
 	this->server = new Server();
-//	terminate = false;
+	this->gzclientPID = 0;
+	this->terminateGZClient = false;
 }
 
 //////////////////////////////////////////////////
@@ -39,9 +40,6 @@ void TestWrapper::resetWorld()
 //////////////////////////////////////////////////
 void TestWrapper::loadWorld(const std::string& worldPath)
 {
-//	server->Stop();
-//	waitForRestart.lock();
-//	server->LoadFile(world);
 	int waitCount = 0;
 	int maxWaitCount = 20000;
 	gzdbg << "Start waiting\n";
@@ -72,10 +70,6 @@ void TestWrapper::loadWorld(const std::string& worldPath)
 		gazebo::physics::WorldPtr new_world = gazebo::physics::create_world("default");
 		if (old_default_world)
 		{
-			msgs::WorldModify worldMsg;
-			worldMsg.set_world_name("default");
-			worldMsg.set_remove(true);
-			this->worldModPub->Publish(worldMsg);
 			gzmsg << "Got an old default world. Stopping world ...\n";
 			old_default_world->Stop();
 			// Get access to gazebo::g_worlds, which is defined in PhysicsIface.cc
@@ -92,6 +86,8 @@ void TestWrapper::loadWorld(const std::string& worldPath)
 			gazebo::physics::init_world(new_world);
 			gzmsg << "Run world\n";
 			gazebo::physics::run_world(new_world);
+			this->world = new_world;
+			killGazeboGUI();
 		} catch (gazebo::common::Exception &e)
 		{
 			gzthrow("Failed to load the World\n" << e);
@@ -101,7 +97,6 @@ void TestWrapper::loadWorld(const std::string& worldPath)
 	{
 		gzerr << "World SDF Element can't be loaded\n";
 	}
-	gzmsg << "Fin\n";
 }
 
 //////////////////////////////////////////////////
@@ -132,27 +127,41 @@ bool TestWrapper::OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntit
 					<= ON_ENTITY_TOLERANCE;
 }
 
-void TestWrapper::initGazeboTransport() {
-	sleep(2);
-	transport::NodePtr node = transport::NodePtr(new transport::Node());
-	node->Init("/gztest");
-	this->worldModPub = node->Advertise<msgs::WorldModify>("/gazebo/world/modify");
-}
-
 //////////////////////////////////////////////////
 void TestWrapper::startGazebo(int _argc, char **_argv)
 {
-//	while (!terminate)
-//	{
 	if (!server->ParseArgs(_argc, _argv))
 		return;
-//		waitForRestart.unlock();
-	boost::thread(boost::bind(&TestWrapper::initGazeboTransport, this));
 	server->Run();
 	server->Fini();
 	delete server;
-//		server = new Server();
-//	}
+}
+
+//////////////////////////////////////////////////
+void TestWrapper::startGazeboGUI(char **_argv)
+{
+	while(!this->terminateGZClient) {
+		this->gzclientPID = fork();
+		int status = 0;
+		if(this->gzclientPID == 0) {
+			execvp("gzclient", _argv);
+			return;
+		} else if(this->gzclientPID == -1) {
+			gzerr << "Failed to fork to gzclient";
+		} else {
+			waitpid(this->gzclientPID, &status, 0);
+		}
+	}
+}
+
+void TestWrapper::stopGazeboGUI()
+{
+	this->terminateGZClient = true;
+	killGazeboGUI();
+}
+
+void TestWrapper::killGazeboGUI() {
+	kill(this->gzclientPID, SIGKILL);
 }
 
 } /* namespace gazebo */
@@ -160,5 +169,9 @@ void TestWrapper::startGazebo(int _argc, char **_argv)
 int main(int _argc, char **_argv)
 {
 	gztest::TestWrapper wrapper;
+	boost::thread gzclient(&gztest::TestWrapper::startGazeboGUI, &wrapper, _argv);
 	wrapper.startGazebo(_argc, _argv);
+	wrapper.stopGazeboGUI();
+	gzclient.join();
+
 }

@@ -7,6 +7,7 @@
 
 #ifndef TESTWRAPPER_HH_
 #define TESTWRAPPER_HH_
+#include <sys/wait.h>
 #include "gazebo/gazebo.hh"
 #include "gazebo/physics/physics.hh"
 #include "abstractgazebotestserver.h"
@@ -29,14 +30,15 @@ public:
     void resetWorld();
     void loadWorld(const std::string& world);
     void startGazebo(int _argc, char **_argv);
+    void startGazeboGUI(char **_argv);
+    void stopGazeboGUI();
 private:
     bool OnEntity(gazebo::physics::EntityPtr entity, gazebo::physics::EntityPtr onEntity);
-    void initGazeboTransport();
+    void killGazeboGUI();
     gazebo::Server *server;
     gazebo::physics::WorldPtr world;
-    gazebo::transport::PublisherPtr worldModPub;
-//    boost::mutex waitForRestart;
-//    bool terminate;
+    pid_t gzclientPID;
+    bool terminateGZClient;
 };
 
 } /* namespace gazebo */

@@ -21,8 +21,12 @@ namespace gztest
     public: bool OnObject(const std::string& object, const std::string& surface);
     /// \brief Resets the world in gazebo to initial state.
     public: void ResetWorld();
-    /// \brief Replace current world with world from given name
-    public: void LoadWorld(const std::string& world);
+    /// \brief Replace current world with world from given name. Returns true if world was replaced successfully.
+    public: bool LoadWorld(const std::string& world);
+    /// \brief Get the position (centroid) of given object
+    public: std::vector<double> GetPosition(const std::string& object);
+    /// \brief Get elapsed simtime
+    public: double GetSimtime();
     private: GazeboTestClient* client;
   };
 }

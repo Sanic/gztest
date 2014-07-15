@@ -140,15 +140,21 @@ void TestWrapper::startGazebo(int _argc, char **_argv)
 //////////////////////////////////////////////////
 void TestWrapper::startGazeboGUI(char **_argv)
 {
-	while(!this->terminateGZClient) {
+	while (!this->terminateGZClient)
+	{
 		this->gzclientPID = fork();
 		int status = 0;
-		if(this->gzclientPID == 0) {
+		if (this->gzclientPID == 0)
+		{
 			execvp("gzclient", _argv);
 			return;
-		} else if(this->gzclientPID == -1) {
+		}
+		else if (this->gzclientPID == -1)
+		{
 			gzerr << "Failed to fork to gzclient";
-		} else {
+		}
+		else
+		{
 			waitpid(this->gzclientPID, &status, 0);
 		}
 	}
@@ -160,18 +166,49 @@ void TestWrapper::stopGazeboGUI()
 	killGazeboGUI();
 }
 
-void TestWrapper::killGazeboGUI() {
+void TestWrapper::killGazeboGUI()
+{
 	kill(this->gzclientPID, SIGKILL);
 }
 
 } /* namespace gazebo */
 
+char** vectorToArgv(const std::vector<std::string>& args)
+{
+	char** _newArgv = (char**) (malloc(sizeof(char*) * args.size()));
+	for (int n = 0; n < args.size(); n++)
+	{
+		_newArgv[n] = (char*) (malloc(sizeof(char) * args[n].size()));
+		strcpy(_newArgv[n], args[n].c_str());
+	}
+	return _newArgv;
+}
+
 int main(int _argc, char **_argv)
 {
+	std::vector<std::string> args;
+	bool headless;
+	for (int n = 0; n < _argc; n++)
+	{
+		std::string arg(_argv[n]);
+		if(arg == "-hl") {
+			headless = true;
+		} else {
+			args.push_back(_argv[n]);
+		}
+	}
 	gztest::TestWrapper wrapper;
-	boost::thread gzclient(&gztest::TestWrapper::startGazeboGUI, &wrapper, _argv);
-	wrapper.startGazebo(_argc, _argv);
-	wrapper.stopGazeboGUI();
-	gzclient.join();
+	boost::thread gzclient;
+	char** _newArgv = vectorToArgv(args);
+	if (!headless)
+	{
+		gzclient = boost::thread(&gztest::TestWrapper::startGazeboGUI, &wrapper, _newArgv);
+	}
+	wrapper.startGazebo(args.size(), _newArgv);
+	if (!headless)
+	{
+		wrapper.stopGazeboGUI();
+		gzclient.join();
+	}
 
 }

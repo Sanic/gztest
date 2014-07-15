@@ -27,14 +27,19 @@ class TestWrapper : public AbstractGazeboTestServer
 public:
 	TestWrapper();
     bool onObject(const std::string& object, const std::string& surface);
+    Json::Value getPosition(const std::string& object);
+    double getSimtime();
     void resetWorld();
-    void loadWorld(const std::string& world);
+    bool loadWorld(const std::string& world);
     void startGazebo(int _argc, char **_argv);
     void startGazeboGUI(char **_argv);
     void stopGazeboGUI();
 private:
     bool OnEntity(gazebo::physics::EntityPtr entity, gazebo::physics::EntityPtr onEntity);
     void killGazeboGUI();
+    gazebo::physics::WorldPtr replaceWorld();
+	void bootWorld(const gazebo::physics::WorldPtr& new_world, const sdf::ElementPtr& worldElem);
+
     gazebo::Server *server;
     gazebo::physics::WorldPtr world;
     pid_t gzclientPID;

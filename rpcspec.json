@@ -8,14 +8,27 @@
         "returns" : true
     },
     {
+    	"method": "getSimtime",
+        "params": null,
+        "returns" : 1.23
+    },
+    {
+    	"method": "getPosition",
+        "params": {
+        	"object": "Object"
+        },
+        "returns" : [1.23, 1.23, 1.23]
+    },
+    {
         "notification": "resetWorld",
         "params": null
     },
     {
-    	"notification": "loadWorld",
+    	"method": "loadWorld",
     	"params": {
     		"world" : "Worldname"
-    	}
+    	},
+        "returns" : true
     }
     	
 ]

@@ -19,12 +19,42 @@ class GazeboTestClient
             delete this->client;
         }
 
-        void loadWorld(const std::string& world) throw (jsonrpc::JsonRpcException)
+        Json::Value getPosition(const std::string& object) throw (jsonrpc::JsonRpcException)
+        {
+            Json::Value p;
+            p["object"] = object; 
+
+            Json::Value result = this->client->CallMethod("getPosition",p);
+    if (result.isArray())
+        return result;
+     else 
+         throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
+
+        }
+
+        double getSimtime() throw (jsonrpc::JsonRpcException)
+        {
+            Json::Value p;
+            p = Json::nullValue;
+            Json::Value result = this->client->CallMethod("getSimtime",p);
+    if (result.isDouble())
+        return result.asDouble();
+     else 
+         throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
+
+        }
+
+        bool loadWorld(const std::string& world) throw (jsonrpc::JsonRpcException)
         {
             Json::Value p;
             p["world"] = world; 
 
-            this->client->CallNotification("loadWorld",p);
+            Json::Value result = this->client->CallMethod("loadWorld",p);
+    if (result.isBool())
+        return result.asBool();
+     else 
+         throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
+
         }
 
         bool onObject(const std::string& object, const std::string& surface) throw (jsonrpc::JsonRpcException)

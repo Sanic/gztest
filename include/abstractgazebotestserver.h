@@ -13,15 +13,27 @@ class AbstractGazeboTestServer : public jsonrpc::AbstractServer<AbstractGazeboTe
         AbstractGazeboTestServer(jsonrpc::AbstractServerConnector* conn) :
             jsonrpc::AbstractServer<AbstractGazeboTestServer>(conn) 
         {
-            this->bindAndAddNotification(new jsonrpc::Procedure("loadWorld", jsonrpc::PARAMS_BY_NAME, "world",jsonrpc::JSON_STRING, NULL), &AbstractGazeboTestServer::loadWorldI);
+            this->bindAndAddMethod(new jsonrpc::Procedure("getPosition", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_ARRAY, "object",jsonrpc::JSON_STRING, NULL), &AbstractGazeboTestServer::getPositionI);
+            this->bindAndAddMethod(new jsonrpc::Procedure("getSimtime", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_REAL,  NULL), &AbstractGazeboTestServer::getSimtimeI);
+            this->bindAndAddMethod(new jsonrpc::Procedure("loadWorld", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_BOOLEAN, "world",jsonrpc::JSON_STRING, NULL), &AbstractGazeboTestServer::loadWorldI);
             this->bindAndAddMethod(new jsonrpc::Procedure("onObject", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_BOOLEAN, "object",jsonrpc::JSON_STRING,"surface",jsonrpc::JSON_STRING, NULL), &AbstractGazeboTestServer::onObjectI);
             this->bindAndAddNotification(new jsonrpc::Procedure("resetWorld", jsonrpc::PARAMS_BY_NAME,  NULL), &AbstractGazeboTestServer::resetWorldI);
 
         }
         
-        inline virtual void loadWorldI(const Json::Value& request) 
+        inline virtual void getPositionI(const Json::Value& request, Json::Value& response) 
         {
-            this->loadWorld(request["world"].asString());
+            response = this->getPosition(request["object"].asString());
+        }
+
+        inline virtual void getSimtimeI(const Json::Value& request, Json::Value& response) 
+        {
+            response = this->getSimtime();
+        }
+
+        inline virtual void loadWorldI(const Json::Value& request, Json::Value& response) 
+        {
+            response = this->loadWorld(request["world"].asString());
         }
 
         inline virtual void onObjectI(const Json::Value& request, Json::Value& response) 
@@ -35,7 +47,9 @@ class AbstractGazeboTestServer : public jsonrpc::AbstractServer<AbstractGazeboTe
         }
 
 
-        virtual void loadWorld(const std::string& world) = 0;
+        virtual Json::Value getPosition(const std::string& object) = 0;
+        virtual double getSimtime() = 0;
+        virtual bool loadWorld(const std::string& world) = 0;
         virtual bool onObject(const std::string& object, const std::string& surface) = 0;
         virtual void resetWorld() = 0;
 

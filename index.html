@@ -35,7 +35,7 @@
 <a name="gztest" class="anchor" href="#gztest"><span class="octicon octicon-link"></span></a>gztest</h1>
 
 <p>gztest is a distributed testing framework for Gazebo. It features an architecture, that splits the test execution and the Gazebo master from each other. The communication between them is done via JSON-RPC. The software consists of specialized Gazebo launcher, that launches the Gazebo master (and Gazebo client if you want to) and fetches all the testable features from the running Gazebo world. On the clientside however, you have a library that handles the communication with the serverside gztest launcher which is controlling the gazebo master and provides easy-to-use methods for useful test-conditions like "Object A on B?" etc.
-By splitting the test execution from the simulation, it's possible to run the actual simulation to a powerful machine, while the tests will be run on a machine with lower hardware specs.</p>
+By splitting the test execution from the simulation, it's possible to run the actual simulation on a powerful machine, while the actual tests will be executed on a machine with lower hardware specs.</p>
 
 <h2>architecture</h2>
 <img alt="architecture" src="images/architecture.png">

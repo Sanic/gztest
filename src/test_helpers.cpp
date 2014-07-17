@@ -20,3 +20,15 @@ bool TestHelper::waitForTrue(boost::function<bool()> x, int msec)
   }
   return false;
 }
+
+bool TestHelper::positionInRange(std::vector<double>& position, double x, double y, double z, double error)
+{
+	return valueInRange(position[0], x, error) && // x in range
+			valueInRange(position[1], y, error) && // y in range
+			valueInRange(position[2], z, error); // z in range
+}
+
+bool TestHelper::valueInRange(double value, double toCompare, double error)
+{
+	return value - error < toCompare && value + error > toCompare;
+}

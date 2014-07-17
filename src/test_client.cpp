@@ -36,12 +36,13 @@ bool TestClient::LoadWorld(const std::string& world)
 std::vector<double> TestClient::GetPosition(const std::string& object)
 {
 	Json::Value position = this->client->getPosition(object);
-	std::vector<double> out;
+	std::vector<double> out(3);
 	out[0] = position[0u].asDouble();
 	out[1] = position[1u].asDouble();
 	out[2] = position[2u].asDouble();
 	return out;
 }
+
 
 //////////////////////////////////////////////////////////
 double TestClient::GetSimtime()

@@ -17,6 +17,9 @@ namespace gztest
     // If the function returns true, waitForTrue returns true.
     // Otherwise, the method will return false after msec millseconds
     public: bool waitForTrue(boost::function<bool()> x, int msec);
+
+    public: bool positionInRange(std::vector<double>& position, double x, double y, double z, double error);
+    public: bool valueInRange(double value, double toCompare, double error);
   };
 }
 #endif

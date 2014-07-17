@@ -37,6 +37,7 @@ public:
 private:
     bool OnEntity(gazebo::physics::EntityPtr entity, gazebo::physics::EntityPtr onEntity);
     void killGazeboGUI();
+    Json::Value JsonTriple(double &x, double &y, double &z);
     gazebo::physics::WorldPtr replaceWorld();
 	void bootWorld(const gazebo::physics::WorldPtr& new_world, const sdf::ElementPtr& worldElem);
 

@@ -38,16 +38,16 @@ bool TestWrapper::onObject(const std::string& object, const std::string& surface
 //////////////////////////////////////////////////
 Json::Value TestWrapper::getPosition(const std::string& object)
 {
-	double position[] =
-	{ 0, 0, 0 };
+	double x, y, z;
+	x = y = z = 0;
 	physics::ModelPtr model = this->world->GetModel(object);
 	if (model != NULL)
 	{
-		position[0] = model->GetBoundingBox().GetCenter().x;
-		position[1] = model->GetBoundingBox().GetCenter().y;
-		position[2] = model->GetBoundingBox().GetCenter().z;
+		x = model->GetBoundingBox().GetCenter().x;
+		y = model->GetBoundingBox().GetCenter().y;
+		z = model->GetBoundingBox().GetCenter().z;
 	}
-	return Json::Value(position);
+	return JsonTriple(x, y, z);
 }
 
 //////////////////////////////////////////////////
@@ -218,6 +218,15 @@ void TestWrapper::killGazeboGUI()
 	{
 		kill(this->gzclientPID, SIGKILL);
 	}
+}
+
+Json::Value TestWrapper::JsonTriple(double &x, double &y, double &z)
+{
+	Json::Value position(Json::arrayValue);
+	position.append(Json::Value(x));
+	position.append(Json::Value(y));
+	position.append(Json::Value(z));
+	return position;
 }
 
 } /* namespace gazebo */

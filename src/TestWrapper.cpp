@@ -236,7 +236,6 @@ char** vectorToArgv(const std::vector<std::string>& args)
 	char** _newArgv = (char**) (malloc(sizeof(char*) * args.size()));
 	for (int n = 0; n < args.size(); n++)
 	{
-		std::cout << args[n] << std::endl;
 		_newArgv[n] = (char*) (malloc(sizeof(char) * args[n].size()+1));
 		strcpy(_newArgv[n], args[n].c_str());
 	}

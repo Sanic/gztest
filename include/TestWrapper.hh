@@ -25,7 +25,7 @@ namespace gztest
 class TestWrapper : public AbstractGazeboTestServer
 {
 public:
-	TestWrapper();
+    TestWrapper();
     bool onObject(const std::string& object, const std::string& surface);
     Json::Value getPosition(const std::string& object);
     double getSimtime();
@@ -39,7 +39,7 @@ private:
     void killGazeboGUI();
     Json::Value JsonTriple(double &x, double &y, double &z);
     gazebo::physics::WorldPtr replaceWorld();
-	void bootWorld(const gazebo::physics::WorldPtr& new_world, const sdf::ElementPtr& worldElem);
+    void bootWorld(const gazebo::physics::WorldPtr& new_world, const sdf::ElementPtr& worldElem);
 
     gazebo::Server *server;
     gazebo::physics::WorldPtr world;

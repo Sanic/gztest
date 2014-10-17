@@ -221,6 +221,7 @@ void TestWrapper::killGazeboGUI()
   }
 }
 
+//////////////////////////////////////////////////
 Json::Value TestWrapper::JsonTriple(double &x, double &y, double &z)
 {
   Json::Value position(Json::arrayValue);

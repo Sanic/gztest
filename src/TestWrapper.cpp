@@ -163,7 +163,7 @@ void TestWrapper::killGazeboGUI()
   }
 }
 
-} /* namespace gazebo */
+} /* namespace gztest */
 
 char** vectorToArgv(const std::vector<std::string>& args)
 {

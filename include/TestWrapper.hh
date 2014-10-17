@@ -33,6 +33,6 @@ private:
   bool terminateGZClient;
 };
 
-} /* namespace gazebo */
+} /* namespace gztest */
 
 #endif /* TESTWRAPPER_HH_ */

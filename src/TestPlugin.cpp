@@ -61,20 +61,20 @@ bool TestPlugin::OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntity
 
   math::Box entityBox = entity->GetBoundingBox();
   math::Box onEntityBox = onEntity->GetBoundingBox();
-  math::Vector3 center = entityBox.GetCenter();
+  math::Vector3 entityPos = entity->GetWorldPose().pos;
+  math::Vector3 onEntityPos = onEntity->GetWorldPose().pos;
 
   //Fast fail if entity is under onEntity
-  if (center.z < onEntityBox.GetCenter().z)
+  if (entityPos.z < onEntityPos.z)
   {
     return false;
   }
 
-  return onEntityBox.GetCenter().x + onEntityBox.GetXLength() / 2 >= center.x
-      && onEntityBox.GetCenter().x - onEntityBox.GetXLength() / 2 <= center.x
-      && onEntityBox.GetCenter().y + onEntityBox.GetYLength() / 2 >= center.y
-      && onEntityBox.GetCenter().y - onEntityBox.GetYLength() / 2 <= center.y
-      && center.z - entityBox.GetZLength() / 2 - onEntityBox.GetCenter().z - onEntityBox.GetZLength() / 2
-          <= ON_ENTITY_TOLERANCE;
+  return onEntityPos.x + onEntityBox.GetXLength() / 2 >= entityPos.x
+      && onEntityPos.x - onEntityBox.GetXLength() / 2 <= entityPos.x
+      && onEntityPos.y + onEntityBox.GetYLength() / 2 >= entityPos.y
+      && onEntityPos.y - onEntityBox.GetYLength() / 2 <= entityPos.y
+      && entityPos.z - entityBox.GetZLength() / 2 - onEntityPos.z - onEntityBox.GetZLength() / 2 <= ON_ENTITY_TOLERANCE;
 }
 
 //////////////////////////////////////////////////
@@ -95,9 +95,9 @@ Json::Value TestPlugin::getPosition(const std::string& object)
   physics::ModelPtr model = this->world->GetModel(object);
   if (model != NULL)
   {
-    x = model->GetBoundingBox().GetCenter().x;
-    y = model->GetBoundingBox().GetCenter().y;
-    z = model->GetBoundingBox().GetCenter().z;
+    x = model->GetWorldPose().pos.x;
+    y = model->GetWorldPose().pos.y;
+    z = model->GetWorldPose().pos.z;
   }
   return JsonTriple(x, y, z);
 }

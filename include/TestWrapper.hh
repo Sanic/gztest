@@ -21,30 +21,29 @@ namespace gztest
 // If the bounding box of an object is less than this value (in meters) over the other object, it is considered to be "on" the other object.
 #define ON_ENTITY_TOLERANCE 0.01
 
-
 class TestWrapper : public AbstractGazeboTestServer
 {
 public:
-    TestWrapper();
-    bool onObject(const std::string& object, const std::string& surface);
-    Json::Value getPosition(const std::string& object);
-    double getSimtime();
-    void resetWorld();
-    bool loadWorld(const std::string& world);
-    void startGazebo(int _argc, char **_argv);
-    void startGazeboGUI(char **_argv);
-    void stopGazeboGUI();
+  TestWrapper();
+  bool onObject(const std::string& object, const std::string& surface);
+  Json::Value getPosition(const std::string& object);
+  double getSimtime();
+  void resetWorld();
+  bool loadWorld(const std::string& world);
+  void startGazebo(int _argc, char **_argv);
+  void startGazeboGUI(char **_argv);
+  void stopGazeboGUI();
 private:
-    bool OnEntity(gazebo::physics::EntityPtr entity, gazebo::physics::EntityPtr onEntity);
-    void killGazeboGUI();
-    Json::Value JsonTriple(double &x, double &y, double &z);
-    gazebo::physics::WorldPtr replaceWorld();
-    void bootWorld(const gazebo::physics::WorldPtr& new_world, const sdf::ElementPtr& worldElem);
+  bool OnEntity(gazebo::physics::EntityPtr entity, gazebo::physics::EntityPtr onEntity);
+  void killGazeboGUI();
+  Json::Value JsonTriple(double &x, double &y, double &z);
+  gazebo::physics::WorldPtr replaceWorld();
+  void bootWorld(const gazebo::physics::WorldPtr& new_world, const sdf::ElementPtr& worldElem);
 
-    gazebo::Server *server;
-    gazebo::physics::WorldPtr world;
-    pid_t gzclientPID;
-    bool terminateGZClient;
+  gazebo::Server *server;
+  gazebo::physics::WorldPtr world;
+  pid_t gzclientPID;
+  bool terminateGZClient;
 };
 
 } /* namespace gazebo */

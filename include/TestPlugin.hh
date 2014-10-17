@@ -28,7 +28,6 @@ namespace gazebo
       void Load(physics::WorldPtr _world, sdf::ElementPtr _sdf);
 #endif
       void Init();
-      void OnUpdate(const common::UpdateInfo & /*_info*/);
       bool onObject(const std::string& object, const std::string& surface);
       void resetWorld();
       bool loadWorld(const std::string& world);
@@ -37,7 +36,6 @@ namespace gazebo
     private:
       Json::Value JsonTriple(double &x, double &y, double &z);
       bool OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntity);
-      event::ConnectionPtr updateConnection;
       physics::WorldPtr world;
   };
 

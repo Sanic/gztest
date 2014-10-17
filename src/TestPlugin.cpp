@@ -26,16 +26,8 @@ namespace gazebo
 	void TestPlugin::Init()
 	{
 		this->world = physics::get_world();
-		this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&TestPlugin::OnUpdate, this, _1));
 		StartListening();
 	}
-
-	//////////////////////////////////////////////////
-	void TestPlugin::OnUpdate(const common::UpdateInfo & /*_info*/)
-    {
-    	  std::cout << "Box1 on Box2: " << onObject("box1", "box2") << std::endl;
-    	  boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
-    }
 
 	//////////////////////////////////////////////////
     bool TestPlugin::onObject(const std::string& object, const std::string& surface)
@@ -102,6 +94,12 @@ namespace gazebo
                     z = model->GetBoundingBox().GetCenter().z;
             }
             return JsonTriple(x, y, z);
+    }
+
+    ////////////////////////////////////////////////
+    double TestPlugin::getSimtime()
+    {
+      return this->world->GetSimTime().Double();
     }
 
 }

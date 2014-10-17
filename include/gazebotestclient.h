@@ -9,76 +9,76 @@
 
 class GazeboTestClient
 {
-    public:
-        GazeboTestClient(jsonrpc::AbstractClientConnector* conn)
-        {
-            this->client = new jsonrpc::Client(conn);
-        }
-        ~GazeboTestClient()
-        {
-            delete this->client;
-        }
+public:
+  GazeboTestClient(jsonrpc::AbstractClientConnector* conn)
+  {
+    this->client = new jsonrpc::Client(conn);
+  }
+  ~GazeboTestClient()
+  {
+    delete this->client;
+  }
 
-        Json::Value getPosition(const std::string& object) throw (jsonrpc::JsonRpcException)
-        {
-            Json::Value p;
-            p["object"] = object; 
+  Json::Value getPosition(const std::string& object) throw (jsonrpc::JsonRpcException)
+  {
+    Json::Value p;
+    p["object"] = object;
 
-            Json::Value result = this->client->CallMethod("getPosition",p);
+    Json::Value result = this->client->CallMethod("getPosition", p);
     if (result.isArray())
-        return result;
-     else 
-         throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
+      return result;
+    else
+      throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
 
-        }
+  }
 
-        double getSimtime() throw (jsonrpc::JsonRpcException)
-        {
-            Json::Value p;
-            p = Json::nullValue;
-            Json::Value result = this->client->CallMethod("getSimtime",p);
+  double getSimtime() throw (jsonrpc::JsonRpcException)
+  {
+    Json::Value p;
+    p = Json::nullValue;
+    Json::Value result = this->client->CallMethod("getSimtime", p);
     if (result.isDouble())
-        return result.asDouble();
-     else 
-         throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
+      return result.asDouble();
+    else
+      throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
 
-        }
+  }
 
-        bool loadWorld(const std::string& world) throw (jsonrpc::JsonRpcException)
-        {
-            Json::Value p;
-            p["world"] = world; 
+  bool loadWorld(const std::string& world) throw (jsonrpc::JsonRpcException)
+  {
+    Json::Value p;
+    p["world"] = world;
 
-            Json::Value result = this->client->CallMethod("loadWorld",p);
+    Json::Value result = this->client->CallMethod("loadWorld", p);
     if (result.isBool())
-        return result.asBool();
-     else 
-         throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
+      return result.asBool();
+    else
+      throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
 
-        }
+  }
 
-        bool onObject(const std::string& object, const std::string& surface) throw (jsonrpc::JsonRpcException)
-        {
-            Json::Value p;
-            p["object"] = object; 
-p["surface"] = surface; 
+  bool onObject(const std::string& object, const std::string& surface) throw (jsonrpc::JsonRpcException)
+  {
+    Json::Value p;
+    p["object"] = object;
+    p["surface"] = surface;
 
-            Json::Value result = this->client->CallMethod("onObject",p);
+    Json::Value result = this->client->CallMethod("onObject", p);
     if (result.isBool())
-        return result.asBool();
-     else 
-         throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
+      return result.asBool();
+    else
+      throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
 
-        }
+  }
 
-        void resetWorld() throw (jsonrpc::JsonRpcException)
-        {
-            Json::Value p;
-            p = Json::nullValue;
-            this->client->CallNotification("resetWorld",p);
-        }
+  void resetWorld() throw (jsonrpc::JsonRpcException)
+  {
+    Json::Value p;
+    p = Json::nullValue;
+    this->client->CallNotification("resetWorld", p);
+  }
 
-    private:
-        jsonrpc::Client* client;
+private:
+  jsonrpc::Client* client;
 };
 #endif //_GAZEBOTESTCLIENT_H_

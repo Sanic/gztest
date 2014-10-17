@@ -27,14 +27,14 @@ namespace gazebo
 	{
 		this->world = physics::get_world();
 		this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&TestPlugin::OnUpdate, this, _1));
-	    StartListening();
+		StartListening();
 	}
 
 	//////////////////////////////////////////////////
 	void TestPlugin::OnUpdate(const common::UpdateInfo & /*_info*/)
     {
-    	//std::cout << "Box1 on Box2: " << OnEntity("box1", "box2") << std::endl;
-    	//boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+    	  std::cout << "Box1 on Box2: " << onObject("box1", "box2") << std::endl;
+    	  boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
     }
 
 	//////////////////////////////////////////////////
@@ -57,6 +57,7 @@ namespace gazebo
 
 	//////////////////////////////////////////////////
     bool TestPlugin::OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntity) {
+      return false;
 
     	// Fail on null
     	if(entity == NULL || onEntity == NULL) {
@@ -77,6 +78,30 @@ namespace gazebo
     			onEntityBox.GetCenter().y + onEntityBox.GetYLength() / 2 >= center.y &&
     			onEntityBox.GetCenter().y - onEntityBox.GetYLength() / 2 <= center.y &&
     			center.z - entityBox.GetZLength() / 2 - onEntityBox.GetCenter().z - onEntityBox.GetZLength() / 2 <= ON_ENTITY_TOLERANCE;
+    }
+
+    Json::Value TestPlugin::JsonTriple(double &x, double &y, double &z)
+    {
+            Json::Value position(Json::arrayValue);
+            position.append(Json::Value(x));
+            position.append(Json::Value(y));
+            position.append(Json::Value(z));
+            return position;
+    }
+
+    //////////////////////////////////////////////////
+    Json::Value TestPlugin::getPosition(const std::string& object)
+    {
+            double x, y, z;
+            x = y = z = 0;
+            physics::ModelPtr model = this->world->GetModel(object);
+            if (model != NULL)
+            {
+                    x = model->GetBoundingBox().GetCenter().x;
+                    y = model->GetBoundingBox().GetCenter().y;
+                    z = model->GetBoundingBox().GetCenter().z;
+            }
+            return JsonTriple(x, y, z);
     }
 
 }

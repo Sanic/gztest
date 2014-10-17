@@ -35,6 +35,7 @@ namespace gazebo
       Json::Value getPosition(const std::string& object);
       double getSimtime();
     private:
+      Json::Value JsonTriple(double &x, double &y, double &z);
       bool OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntity);
       event::ConnectionPtr updateConnection;
       physics::WorldPtr world;

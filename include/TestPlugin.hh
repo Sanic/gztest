@@ -8,41 +8,41 @@
 namespace gazebo
 {
 
-  // Default RPC port
-  #define RPC_PORT 8080
+// Default RPC port
+#define RPC_PORT 8080
 
-  // If the bounding box of an object is less than this value (in meters) over the other object, it is considered to be "on" the other object.
-  #define ON_ENTITY_TOLERANCE 0.01
+// If the bounding box of an object is less than this value (in meters) over the other object, it is considered to be "on" the other object.
+#define ON_ENTITY_TOLERANCE 0.01
 
 #ifdef USE_SYSTEM_PLUGIN
-  class TestPlugin : public SystemPlugin, public AbstractGazeboTestServer
+class TestPlugin : public SystemPlugin, public AbstractGazeboTestServer
 #else
-  class TestPlugin : public WorldPlugin, public AbstractGazeboTestServer
+class TestPlugin : public WorldPlugin, public AbstractGazeboTestServer
 #endif
-  {
-    public:
-      TestPlugin();
+{
+public:
+  TestPlugin();
 #ifdef USE_SYSTEM_PLUGIN
-      void Load(int _argc, char **_argv);
+  void Load(int _argc, char **_argv);
 #else
-      void Load(physics::WorldPtr _world, sdf::ElementPtr _sdf);
+  void Load(physics::WorldPtr _world, sdf::ElementPtr _sdf);
 #endif
-      void Init();
-      bool onObject(const std::string& object, const std::string& surface);
-      void resetWorld();
-      bool loadWorld(const std::string& world);
-      Json::Value getPosition(const std::string& object);
-      double getSimtime();
-    private:
-      Json::Value JsonTriple(double &x, double &y, double &z);
-      bool OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntity);
-      physics::WorldPtr world;
-  };
+  void Init();
+  bool onObject(const std::string& object, const std::string& surface);
+  void resetWorld();
+  bool loadWorld(const std::string& world);
+  Json::Value getPosition(const std::string& object);
+  double getSimtime();
+private:
+  Json::Value JsonTriple(double &x, double &y, double &z);
+  bool OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntity);
+  physics::WorldPtr world;
+};
 
 #ifdef USE_SYSTEM_PLUGIN
-  GZ_REGISTER_SYSTEM_PLUGIN(TestPlugin)
+GZ_REGISTER_SYSTEM_PLUGIN(TestPlugin)
 #else
-  GZ_REGISTER_WORLD_PLUGIN(TestPlugin)
+GZ_REGISTER_WORLD_PLUGIN(TestPlugin)
 #endif
 }
 #endif

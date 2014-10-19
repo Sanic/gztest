@@ -10,14 +10,14 @@
 using namespace gazebo;
 
 // Get access to gazebo::g_worlds, which is defined in PhysicsIface.cc
-extern std::vector<gazebo::physics::WorldPtr> g_worlds;
+extern std::vector<physics::WorldPtr> g_worlds;
 
 namespace gztest
 {
 
 //////////////////////////////////////////////////
 TestWrapper::TestWrapper() :
-    AbstractGazeboTestServer(new jsonrpc::HttpServer(RPC_PORT))
+    AbstractTestImplementation(new jsonrpc::HttpServer(RPC_PORT))
 {
   StartListening();
   this->server = new Server();
@@ -26,41 +26,8 @@ TestWrapper::TestWrapper() :
 }
 
 /**
- * START RPC METHOD IMPLEMENTATIONS
+ * START ABSTRACT METHOD IMPLEMENTATIONS
  */
-
-//////////////////////////////////////////////////
-bool TestWrapper::onObject(const std::string& object, const std::string& surface)
-{
-  return OnEntity(this->world->GetModel(object), this->world->GetModel(surface));
-}
-
-//////////////////////////////////////////////////
-Json::Value TestWrapper::getPosition(const std::string& object)
-{
-  double x, y, z;
-  x = y = z = 0;
-  physics::ModelPtr model = this->world->GetModel(object);
-  if (model != NULL)
-  {
-    x = model->GetBoundingBox().GetCenter().x;
-    y = model->GetBoundingBox().GetCenter().y;
-    z = model->GetBoundingBox().GetCenter().z;
-  }
-  return JsonTriple(x, y, z);
-}
-
-//////////////////////////////////////////////////
-double TestWrapper::getSimtime()
-{
-  return this->world->GetSimTime().Double();
-}
-
-//////////////////////////////////////////////////
-void TestWrapper::resetWorld()
-{
-  this->world->Reset();
-}
 
 //////////////////////////////////////////////////
 bool TestWrapper::loadWorld(const std::string& worldPath)
@@ -68,8 +35,8 @@ bool TestWrapper::loadWorld(const std::string& worldPath)
   int waitCount = 0;
   int maxWaitCount = 20000;
   gzdbg << "Start waiting\n";
-  while (!gazebo::physics::get_world() && ++waitCount < maxWaitCount)
-    gazebo::common::Time::MSleep(10);
+  while (!physics::get_world() && ++waitCount < maxWaitCount)
+    common::Time::MSleep(10);
   gzdbg << "Done waiting\n";
   gzmsg << "Reloading world\n";
 
@@ -81,7 +48,6 @@ bool TestWrapper::loadWorld(const std::string& worldPath)
   }
 
   if (!sdf::readFile(worldPath, sdf))
-  // if (!sdf::readFile("/usr/share/gazebo-1.9/worlds/empty.world", sdf))
   {
     gzerr << "Unable to read SDF file [" << worldPath << "]\n";
     return false;
@@ -89,7 +55,7 @@ bool TestWrapper::loadWorld(const std::string& worldPath)
   sdf::ElementPtr worldElem = sdf->root->GetElement("world");
   if (worldElem)
   {
-    gazebo::physics::WorldPtr new_world = replaceWorld();
+    physics::WorldPtr new_world = replaceWorld();
     bootWorld(new_world, worldElem);
     return true;
   }
@@ -97,35 +63,10 @@ bool TestWrapper::loadWorld(const std::string& worldPath)
   return false;
 }
 
-/**
- * START GAZEBO TESTING IMPLEMENTATIONS
- */
-
 //////////////////////////////////////////////////
-bool TestWrapper::OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntity)
+physics::WorldPtr TestWrapper::GetWorld()
 {
-  // Fail on null
-  if (entity == NULL || onEntity == NULL)
-  {
-    return false;
-  }
-
-  math::Box entityBox = entity->GetBoundingBox();
-  math::Box onEntityBox = onEntity->GetBoundingBox();
-  math::Vector3 center = entityBox.GetCenter();
-
-  //Fast fail if entity is under onEntity
-  if (center.z < onEntityBox.GetCenter().z)
-  {
-    return false;
-  }
-
-  return onEntityBox.GetCenter().x + onEntityBox.GetXLength() / 2 >= center.x
-      && onEntityBox.GetCenter().x - onEntityBox.GetXLength() / 2 <= center.x
-      && onEntityBox.GetCenter().y + onEntityBox.GetYLength() / 2 >= center.y
-      && onEntityBox.GetCenter().y - onEntityBox.GetYLength() / 2 <= center.y
-      && center.z - entityBox.GetZLength() / 2 - onEntityBox.GetCenter().z - onEntityBox.GetZLength() / 2
-          <= ON_ENTITY_TOLERANCE;
+  return this->world;
 }
 
 /**
@@ -133,17 +74,17 @@ bool TestWrapper::OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntit
  */
 
 //////////////////////////////////////////////////
-gazebo::physics::WorldPtr TestWrapper::replaceWorld()
+physics::WorldPtr TestWrapper::replaceWorld()
 {
   // Get the currently running world
-  gazebo::physics::WorldPtr old_default_world = gazebo::physics::get_world();
+  physics::WorldPtr old_default_world = physics::get_world();
   // Push an empty world to the g_worlds list
-  gazebo::physics::WorldPtr new_world = gazebo::physics::create_world("default");
+  physics::WorldPtr new_world = physics::create_world("default");
   if (old_default_world)
   {
     gzmsg << "Got an old default world. Stopping world ...\n";
     old_default_world->Stop();
-    // Get access to gazebo::g_worlds, which is defined in PhysicsIface.cc
+    // Get access to g_worlds, which is defined in PhysicsIface.cc
     g_worlds.erase(g_worlds.begin());
     // 1 World should be left ...
     gzmsg << "Running worlds " << g_worlds.size() << "\n";
@@ -152,21 +93,21 @@ gazebo::physics::WorldPtr TestWrapper::replaceWorld()
 }
 
 //////////////////////////////////////////////////
-void TestWrapper::bootWorld(const gazebo::physics::WorldPtr& new_world, const sdf::ElementPtr& worldElem)
+void TestWrapper::bootWorld(const physics::WorldPtr& new_world, const sdf::ElementPtr& worldElem)
 {
   // Create the world
   try
   {
     gzmsg << "Loading world\n";
-    gazebo::physics::load_world(new_world, worldElem);
+    physics::load_world(new_world, worldElem);
     gzmsg << "Init world\n";
-    gazebo::physics::init_world(new_world);
+    physics::init_world(new_world);
     gzmsg << "Run world\n";
-    gazebo::physics::run_world(new_world);
+    physics::run_world(new_world);
     this->world = new_world;
     killGazeboGUI();
   }
-  catch (gazebo::common::Exception &e)
+  catch (common::Exception &e)
   {
     gzthrow("Failed to load the World\n" << e);
   }
@@ -221,17 +162,7 @@ void TestWrapper::killGazeboGUI()
   }
 }
 
-//////////////////////////////////////////////////
-Json::Value TestWrapper::JsonTriple(double &x, double &y, double &z)
-{
-  Json::Value position(Json::arrayValue);
-  position.append(Json::Value(x));
-  position.append(Json::Value(y));
-  position.append(Json::Value(z));
-  return position;
-}
-
-} /* namespace gazebo */
+} /* namespace gztest */
 
 char** vectorToArgv(const std::vector<std::string>& args)
 {

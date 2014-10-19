@@ -35,13 +35,16 @@ include_directories(${GTEST_INCLUDE_DIRS} ${COMMON_INCLUDES})
 set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
 
 # End external projects
+#add_definitions(-DUSE_SYSTEM_PLUGIN)
+add_library(TestPlugin SHARED src/TestPlugin.cpp src/AbstractTestImplementation.cpp)
+target_link_libraries(TestPlugin ${GAZEBO_LIBRARIES} jsonrpc)
 
 #add the gztest library
 add_library(gztest src/test_helpers.cpp src/test_client.cpp)
 target_link_libraries(gztest ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} jsonrpc)
 
 # Gazebo test wrapper executable
-add_executable(TestWrapper src/TestWrapper.cpp)
+add_executable(TestWrapper src/TestWrapper.cpp src/AbstractTestImplementation.cpp)
 target_link_libraries(TestWrapper ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} protobuf jsonrpc)
 
 # Build tests

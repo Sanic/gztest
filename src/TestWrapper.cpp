@@ -48,7 +48,6 @@ bool TestWrapper::loadWorld(const std::string& worldPath)
   }
 
   if (!sdf::readFile(worldPath, sdf))
-  // if (!sdf::readFile("/usr/share/gazebo-1.9/worlds/empty.world", sdf))
   {
     gzerr << "Unable to read SDF file [" << worldPath << "]\n";
     return false;

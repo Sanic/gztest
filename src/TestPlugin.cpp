@@ -7,6 +7,7 @@ namespace gazebo
 TestPlugin::TestPlugin() :
     AbstractTestImplementation(new jsonrpc::HttpServer(RPC_PORT))
 {
+  gzmsg << "TestPlugin started" << std::endl;
 }
 
 /**

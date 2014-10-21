@@ -20,6 +20,24 @@
         "returns" : [1.23, 1.23, 1.23]
     },
     {
+    	"method": "monitorLinkEvents",
+        "params": {
+        	"modelName": "modelName",
+        	"jointName": "jointName",
+        	"linkName": "linkName"
+        },
+        "returns" : true
+    },
+    {
+    	"method": "getLinkEventHistory",
+        "params": {
+        	"modelName": "modelName",
+        	"jointName": "jointName",
+        	"linkName": "linkName"
+        },
+        "returns" : [[1.23, true, "Name"]]
+    },
+    {
         "notification": "resetWorld",
         "params": null
     },

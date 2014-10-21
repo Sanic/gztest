@@ -13,14 +13,21 @@ class AbstractGazeboTestServer : public jsonrpc::AbstractServer<AbstractGazeboTe
         AbstractGazeboTestServer(jsonrpc::AbstractServerConnector* conn) :
             jsonrpc::AbstractServer<AbstractGazeboTestServer>(conn) 
         {
+            this->bindAndAddMethod(new jsonrpc::Procedure("getLinkEventHistory", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_ARRAY, "jointName",jsonrpc::JSON_STRING,"linkName",jsonrpc::JSON_STRING,"modelName",jsonrpc::JSON_STRING, NULL), &AbstractGazeboTestServer::getLinkEventHistoryI);
             this->bindAndAddMethod(new jsonrpc::Procedure("getPosition", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_ARRAY, "object",jsonrpc::JSON_STRING, NULL), &AbstractGazeboTestServer::getPositionI);
             this->bindAndAddMethod(new jsonrpc::Procedure("getSimtime", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_REAL,  NULL), &AbstractGazeboTestServer::getSimtimeI);
             this->bindAndAddMethod(new jsonrpc::Procedure("loadWorld", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_BOOLEAN, "world",jsonrpc::JSON_STRING, NULL), &AbstractGazeboTestServer::loadWorldI);
+            this->bindAndAddMethod(new jsonrpc::Procedure("monitorLinkEvents", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_BOOLEAN, "jointName",jsonrpc::JSON_STRING,"linkName",jsonrpc::JSON_STRING,"modelName",jsonrpc::JSON_STRING, NULL), &AbstractGazeboTestServer::monitorLinkEventsI);
             this->bindAndAddMethod(new jsonrpc::Procedure("onObject", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_BOOLEAN, "object",jsonrpc::JSON_STRING,"surface",jsonrpc::JSON_STRING, NULL), &AbstractGazeboTestServer::onObjectI);
             this->bindAndAddNotification(new jsonrpc::Procedure("resetWorld", jsonrpc::PARAMS_BY_NAME,  NULL), &AbstractGazeboTestServer::resetWorldI);
 
         }
         
+        inline virtual void getLinkEventHistoryI(const Json::Value& request, Json::Value& response) 
+        {
+            response = this->getLinkEventHistory(request["jointName"].asString(), request["linkName"].asString(), request["modelName"].asString());
+        }
+
         inline virtual void getPositionI(const Json::Value& request, Json::Value& response) 
         {
             response = this->getPosition(request["object"].asString());
@@ -36,6 +43,11 @@ class AbstractGazeboTestServer : public jsonrpc::AbstractServer<AbstractGazeboTe
             response = this->loadWorld(request["world"].asString());
         }
 
+        inline virtual void monitorLinkEventsI(const Json::Value& request, Json::Value& response) 
+        {
+            response = this->monitorLinkEvents(request["jointName"].asString(), request["linkName"].asString(), request["modelName"].asString());
+        }
+
         inline virtual void onObjectI(const Json::Value& request, Json::Value& response) 
         {
             response = this->onObject(request["object"].asString(), request["surface"].asString());
@@ -47,9 +59,11 @@ class AbstractGazeboTestServer : public jsonrpc::AbstractServer<AbstractGazeboTe
         }
 
 
+        virtual Json::Value getLinkEventHistory(const std::string& jointName, const std::string& linkName, const std::string& modelName) = 0;
         virtual Json::Value getPosition(const std::string& object) = 0;
         virtual double getSimtime() = 0;
         virtual bool loadWorld(const std::string& world) = 0;
+        virtual bool monitorLinkEvents(const std::string& jointName, const std::string& linkName, const std::string& modelName) = 0;
         virtual bool onObject(const std::string& object, const std::string& surface) = 0;
         virtual void resetWorld() = 0;
 

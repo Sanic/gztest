@@ -16,6 +16,8 @@ namespace gztest
 AbstractTestImplementation::AbstractTestImplementation(jsonrpc::AbstractServerConnector* conn) :
     AbstractGazeboTestServer(conn)
 {
+  this->updateConnection = event::Events::ConnectWorldUpdateEnd(
+      boost::bind(&AbstractTestImplementation::onUpdate, this));
 }
 
 //////////////////////////////////////////////////
@@ -88,6 +90,80 @@ Json::Value AbstractTestImplementation::getPosition(const std::string& object)
 double AbstractTestImplementation::getSimtime()
 {
   return GetWorld()->GetSimTime().Double();
+}
+
+//////////////////////////////////////////////////
+bool AbstractTestImplementation::monitorLinkEvents(const std::string& modelName, const std::string& jointName,
+                                                   const std::string& linkName)
+{
+  physics::ModelPtr model = GetWorld()->GetModel(modelName);
+  if (model == NULL)
+  {
+    return false;
+  }
+  physics::JointPtr joint = model->GetJoint(jointName);
+  if (joint == NULL)
+  {
+    return false;
+  }
+  Watcher watcher(modelName, jointName, linkName);
+  this->linkWatchEvents.insert(std::make_pair(watcher, std::vector<WatcherEvent>()));
+  return true;
+}
+
+//////////////////////////////////////////////////
+void AbstractTestImplementation::onUpdate()
+{
+  updateJoints();
+}
+
+//////////////////////////////////////////////////
+void AbstractTestImplementation::updateJoints()
+{
+  for (WatcherEventMap::iterator iter = this->linkWatchEvents.begin(); iter != this->linkWatchEvents.end(); ++iter)
+  {
+    physics::ModelPtr model = GetWorld()->GetModel(iter->first.modelName);
+    physics::JointPtr joint = model->GetJoint(iter->first.jointName);
+    physics::Link_V childLinks = joint->GetChild()->GetChildJointsLinks();
+    physics::LinkPtr link;
+    for (physics::Link_V::iterator jointLinks = childLinks.begin(); jointLinks != childLinks.end(); ++jointLinks)
+    {
+      if ((*jointLinks)->GetName() == iter->first.linkName)
+      {
+        link = (*jointLinks);
+        break;
+      }
+    }
+    bool attached = link != NULL;
+    std::vector<WatcherEvent>* watcherList = &iter->second;
+    if (watcherList->size() == 0 || watcherList->back().get<1>() != attached
+        || (attached && watcherList->back().get<2>() != link->GetModel()->GetName()))
+    {
+      watcherList->push_back(WatcherEvent(getSimtime(), attached, attached ? link->GetModel()->GetName() : ""));
+    }
+  }
+
+}
+
+//////////////////////////////////////////////////
+Json::Value AbstractTestImplementation::getLinkEventHistory(const std::string& modelName, const std::string& jointName,
+                                                            const std::string& linkName)
+{
+  Json::Value all(Json::arrayValue);
+  WatcherEventMap::const_iterator history = this->linkWatchEvents.find(Watcher(modelName, jointName, linkName));
+  if (history != this->linkWatchEvents.end())
+  {
+    for (std::vector<WatcherEvent>::const_iterator historyElement = history->second.begin();
+        historyElement != history->second.end(); ++historyElement)
+    {
+      Json::Value position(Json::arrayValue);
+      position.append((*historyElement).head);
+      position.append((*historyElement).tail.head);
+      position.append((*historyElement).tail.tail.head);
+      all.append(position);
+    }
+  }
+  return all;
 }
 
 } /* namespace gazebo */

@@ -7,6 +7,7 @@
 #define _TEST_CLIENT_H_
 
 #include "gazebotestclient.h"
+#include "Watchers.hh"
 
 namespace gztest
 {
@@ -34,6 +35,10 @@ public:
 public:
   /// \brief Get elapsed simtime
   double GetSimtime();
+public:
+  std::vector<WatcherEvent> GetLinkEventHistory(const std::string& modelName, const std::string& jointName, const std::string& linkName);
+public:
+  bool MonitorLinkEvents(const std::string& modelName, const std::string& jointName, const std::string& linkName);
 private:
   GazeboTestClient* client;
 };

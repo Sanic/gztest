@@ -1,4 +1,6 @@
 #include <boost/tuple/tuple.hpp>
+#include <boost/functional/hash.hpp>
+#include <boost/unordered/unordered_map.hpp>
 
 #ifndef _WATCHERS_HH
 #define _WATCHERS_HH

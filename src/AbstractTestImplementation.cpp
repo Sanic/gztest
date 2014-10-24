@@ -35,8 +35,6 @@ void AbstractTestImplementation::resetWorld()
 //////////////////////////////////////////////////
 bool AbstractTestImplementation::OnEntity(physics::EntityPtr entity, physics::EntityPtr onEntity)
 {
-  return false;
-
   // Fail on null
   if (entity == NULL || onEntity == NULL)
   {
